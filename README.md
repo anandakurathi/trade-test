@@ -35,4 +35,4 @@ GRANT ALL on trade.* to 'stock_user'@'localhost';
 quit
 ```
 
-To execute the job use this endpoint `http://127.0.0.1:8000/trade-test`
+To execute the job use this endpoint `http://127.0.0.1/trade-test`
