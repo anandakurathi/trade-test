@@ -9,6 +9,7 @@
     <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css"/>
     <link href="../../assets/css/easy-autocomplete.min.css" rel="stylesheet" type="text/css"/>
     <script src="../../assets/js/jquery.easy-autocomplete.min.js" type="text/javascript"></script>
+    <script src="../../assets/js/jquery.validate.min.js" type="text/javascript"></script>
 
     <header class="masthead">
         <div class="inner">
@@ -26,7 +27,7 @@
                 ?>
             </div>
             <!-- Example row of columns -->
-            <form action="" method="post">
+            <form id="forecast-form" name="forecast-form" method="post">
                 <div class="row">
                     <div class="col-md-3 form-label-group">
                         <label for="stockSuggestion">Stock List</label>
@@ -34,13 +35,11 @@
                             type="text"
                             class="form-control"
                             id="stockSuggestion"
+                            name="stock"
                             placeholder="Stock Name"
                             value=""
                             required
                         />
-                        <div class="invalid-feedback">
-                            Choose Stock List CSV
-                        </div>
                     </div>
                     <div class="col-md-3 form-label-group">
                         <label for="fromDate">From Date</label>
@@ -48,13 +47,11 @@
                                 type="text"
                                 class="form-control"
                                 id="startDate"
+                                name="startDate"
                                 placeholder="From Date"
                                 value=""
                                 required
                         />
-                        <div class="invalid-feedback">
-                            Valid first name is required.
-                        </div>
                     </div>
                     <div class="col-md-3 form-label-group">
                         <label for="toDate">To Date</label>
@@ -62,13 +59,11 @@
                                 type="text"
                                 class="form-control"
                                 id="endDate"
+                                name="endDate"
                                 placeholder="To Date"
                                 value=""
                                 required
                         />
-                        <div class="invalid-feedback">
-                            Valid first name is required.
-                        </div>
                     </div>
                     <div class="col-md-1">
                         <button type="submit" class="btn btn-primary submit-btn text-left">Submit</button>
@@ -77,9 +72,7 @@
             </form>
             <hr>
             <div class="row">
-                <div class="col-md-8" id="result">
-                </div>
-                <div class="col-md-4">
+                <div class="col-md-12" id="result">
                 </div>
             </div>
         </div> <!-- /container -->
@@ -87,29 +80,35 @@
 
     <script>
         $(document).ready(function () {
-            var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+            let today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
             $('#startDate').datepicker({
                 uiLibrary: 'bootstrap4',
                 iconsLibrary: 'fontawesome',
+                format: 'yyyy-mm-dd',
                 maxDate: function () {
                     return $('#endDate').val();
+                },
+                change: function (e) {
+                    $('#startDate').valid();
                 }
             });
             $('#endDate').datepicker({
                 uiLibrary: 'bootstrap4',
                 iconsLibrary: 'fontawesome',
+                format: 'yyyy-mm-dd',
                 minDate: function () {
                     return $('#startDate').val();
+                },
+                change: function (e) {
+                    $('#endDate').valid();
                 }
             });
-            console.log('typeahead');
-            var options = {
+
+            let options = {
                 url: function(phrase) {
                     return "/stock-list";
                 },
                 getValue: function(element) {
-                    console.log(element);
-                    console.log(element.stock_name);
                     return element.stock_name;
                 },
                 ajaxSettings: {
@@ -125,8 +124,47 @@
                 },
                 requestDelay: 400
             };
-
             $("#stockSuggestion").easyAutocomplete(options);
+
+            $( "#forecast-form" ).validate( {
+                rules: {
+                    stock: {
+                        required: true
+                    },
+                    startDate: {
+                        required: true,
+                        dateISO: true
+                    },
+                    endDate: {
+                        required: true,
+                        dateISO: true
+                    }
+                },
+                messages: {
+                    stock: {
+                        required: "Please choose a Stock"
+                    },
+                    startDate: {
+                        required: "Please choose start Date",
+                    },
+                    endDate: {
+                        required: "Please choose end Date",
+                    }
+                },
+                errorElement: "em",
+                errorPlacement: function ( error, element ) {
+                    // Add the `invalid-feedback` class to the error element
+                    error.addClass( "invalid-feedback" );
+
+                    error.insertAfter( element.closest('div') );
+                },
+                highlight: function ( element, errorClass, validClass ) {
+                    $( element ).addClass( "is-invalid" ).removeClass( "is-valid" );
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $( element ).addClass( "is-valid" ).removeClass( "is-invalid" );
+                }
+            } );
         });
     </script>
 <?php

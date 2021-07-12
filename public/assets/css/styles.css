@@ -128,4 +128,14 @@ input:required:focus {
 .gj-picker-bootstrap table tr td div, .gj-picker-bootstrap table tr th div{
     color: #000000;
 }
-.easy-autocomplete-container ul {color: #000000;}
+.easy-autocomplete-container ul {color: #000000; text-shadow: none;}
+.gj-picker-bootstrap div[role="navigator"] div:first-child, .gj-picker-bootstrap div[role="navigator"] div:last-child{
+    color: #000000;
+}
+.gj-picker div[role="navigator"] div[role="period"] {
+    color: #000000;
+    text-shadow: none;
+}
+.gj-picker table {
+    text-shadow: none;
+}

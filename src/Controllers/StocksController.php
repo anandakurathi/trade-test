@@ -22,12 +22,18 @@ class StocksController extends BaseController
         View::render('stock-list');
     }
 
-    public function getStocksByName()
+    public function stocksByName()
     {
         $params = ($_REQUEST['phrase']) ?: null;
         $stock = new Stock();
         $stockList = $stock->getStocksByName($params);
         echo json_encode($stockList); exit();
+    }
+
+    public function stockForecast()
+    {
+
+
     }
 
 }
