@@ -77,4 +77,31 @@ class Stock
             return null;
         }
     }
+
+    /**
+     * Get distinct Stock names
+     * @return mixed|null
+     */
+    public function getStocksByName($string)
+    {
+        try {
+            $query = "
+                SELECT
+                       stock_name
+                FROM "
+                .$this->table.
+                " 
+                WHERE
+                    stock_name LIKE '%$string%'
+                GROUP BY stock_name
+                ORDER BY stock_name DESC 
+                ";
+            $stmt = $this->db->prepare($query);
+            $stmt->execute();
+            return $stmt->fetchAll(\PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return null;
+        }
+    }
 }

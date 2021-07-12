@@ -7,6 +7,9 @@
           integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
     <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/easy-autocomplete.min.css" rel="stylesheet" type="text/css"/>
+    <script src="../../assets/js/jquery.easy-autocomplete.min.js" type="text/javascript"></script>
+
     <header class="masthead">
         <div class="inner">
             <h3 class="masthead-brand">Stock Exchange Test</h3>
@@ -26,21 +29,15 @@
             <form action="" method="post">
                 <div class="row">
                     <div class="col-md-3 form-label-group">
-                        <label for="firstName">Stock List</label>
-                        <select class="form-control" id="sel1">
-                            <option value="">Choose Stock List</option>
-                            <?php
-                            if ($stockList) {
-                                foreach ($stockList as $item) { ?>
-                                    <option value="<?php
-                                    echo $item->stock_name; ?>">
-                                        <?php
-                                        echo $item->stock_name; ?>
-                                    </option>
-                                    <?php
-                                }
-                            } ?>
-                        </select>
+                        <label for="stockSuggestion">Stock List</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="stockSuggestion"
+                            placeholder="Stock Name"
+                            value=""
+                            required
+                        />
                         <div class="invalid-feedback">
                             Choose Stock List CSV
                         </div>
@@ -51,7 +48,7 @@
                                 type="text"
                                 class="form-control"
                                 id="startDate"
-                                placeholder=""
+                                placeholder="From Date"
                                 value=""
                                 required
                         />
@@ -65,7 +62,7 @@
                                 type="text"
                                 class="form-control"
                                 id="endDate"
-                                placeholder=""
+                                placeholder="To Date"
                                 value=""
                                 required
                         />
@@ -89,20 +86,47 @@
     </main>
 
     <script>
-        var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
-        $('#startDate').datepicker({
-            uiLibrary: 'bootstrap4',
-            iconsLibrary: 'fontawesome',
-            maxDate: function () {
-                return $('#endDate').val();
-            }
-        });
-        $('#endDate').datepicker({
-            uiLibrary: 'bootstrap4',
-            iconsLibrary: 'fontawesome',
-            minDate: function () {
-                return $('#startDate').val();
-            }
+        $(document).ready(function () {
+            var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+            $('#startDate').datepicker({
+                uiLibrary: 'bootstrap4',
+                iconsLibrary: 'fontawesome',
+                maxDate: function () {
+                    return $('#endDate').val();
+                }
+            });
+            $('#endDate').datepicker({
+                uiLibrary: 'bootstrap4',
+                iconsLibrary: 'fontawesome',
+                minDate: function () {
+                    return $('#startDate').val();
+                }
+            });
+            console.log('typeahead');
+            var options = {
+                url: function(phrase) {
+                    return "/stock-list";
+                },
+                getValue: function(element) {
+                    console.log(element);
+                    console.log(element.stock_name);
+                    return element.stock_name;
+                },
+                ajaxSettings: {
+                    dataType: "json",
+                    method: "POST",
+                    data: {
+                        dataType: "json"
+                    }
+                },
+                preparePostData: function(data) {
+                    data.phrase = $("#stockSuggestion").val();
+                    return data;
+                },
+                requestDelay: 400
+            };
+
+            $("#stockSuggestion").easyAutocomplete(options);
         });
     </script>
 <?php

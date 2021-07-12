@@ -19,9 +19,15 @@ class StocksController extends BaseController
 
     public function index()
     {
+        View::render('stock-list');
+    }
+
+    public function getStocksByName()
+    {
+        $params = ($_REQUEST['phrase']) ?: null;
         $stock = new Stock();
-        $stockList = $stock->getDistinctStocks();
-        View::render('stock-list', ['stockList' => $stockList]);
+        $stockList = $stock->getStocksByName($params);
+        echo json_encode($stockList); exit();
     }
 
 }
