@@ -2,13 +2,6 @@
  * Globals
  */
 
-/* Links */
-a,
-a:focus,
-a:hover {
-    color: #fff;
-}
-
 /* Custom default button */
 .btn-secondary,
 .btn-secondary:hover,
@@ -27,15 +20,12 @@ a:hover {
 html,
 body {
     height: 100%;
-    background-color: #333;
 }
 
 body {
     display: -ms-flexbox;
     display: flex;
-    color: #fff;
-    text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);
-    box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
+    color: #000000;
 }
 
 .cover-container {
@@ -98,9 +88,7 @@ body {
 /*
  * Footer
  */
-.mastfoot {
-    color: rgba(255, 255, 255, .5);
-}
+
 input:required:focus {
     border: 1px solid red;
     outline: none;
@@ -125,17 +113,6 @@ input:required:focus {
 .submit-btn {
     margin-top: 30px;
 }
-.gj-picker-bootstrap table tr td div, .gj-picker-bootstrap table tr th div{
-    color: #000000;
-}
-.easy-autocomplete-container ul {color: #000000; text-shadow: none;}
-.gj-picker-bootstrap div[role="navigator"] div:first-child, .gj-picker-bootstrap div[role="navigator"] div:last-child{
-    color: #000000;
-}
-.gj-picker div[role="navigator"] div[role="period"] {
-    color: #000000;
-    text-shadow: none;
-}
-.gj-picker table {
-    text-shadow: none;
+.vertical-separation {
+    border-left: 1px solid #dee2e6;
 }

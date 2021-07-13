@@ -3,6 +3,7 @@
 \Src\Services\View::includeLayoutElement('header')
 ?>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="../../assets/dist/js/bootstrap.bundle.js" type="text/javascript"></script>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
           integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
@@ -10,7 +11,9 @@
     <link href="../../assets/css/easy-autocomplete.min.css" rel="stylesheet" type="text/css"/>
     <script src="../../assets/js/jquery.easy-autocomplete.min.js" type="text/javascript"></script>
     <script src="../../assets/js/jquery.validate.min.js" type="text/javascript"></script>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+          integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
     <header class="masthead">
         <div class="inner">
             <h3 class="masthead-brand">Stock Exchange Test</h3>
@@ -66,16 +69,17 @@
                         />
                     </div>
                     <div class="col-md-1">
-                        <button type="submit" class="btn btn-primary submit-btn text-left">Submit</button>
+                        <button type="submit" id="submit-btn" class="btn btn-primary submit-btn text-left">Submit</button>
+                        <div class="fa-3x" id="loading" style="display: none;">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
                     </div>
                 </div>
             </form>
-            <hr>
-            <div class="row">
-                <div class="col-md-12" id="result">
-                </div>
-            </div>
         </div> <!-- /container -->
+        <hr>
+        <div id="result">
+        </div>
     </main>
 
     <script>
@@ -127,6 +131,28 @@
             $("#stockSuggestion").easyAutocomplete(options);
 
             $( "#forecast-form" ).validate( {
+                submitHandler: function (form) {
+                    let serializedData = $(form).serialize();
+                    $.ajax({
+                        url: '/stock-forecast',
+                        type: 'POST',
+                        data: serializedData,
+                        cache: false,
+                        processData: false,
+                        beforeSend: function(){
+                            $('#submit-btn').hide();
+                        },
+                        complete: function(){
+                            $("#submit-btn").show();
+                        },
+                        success: function(data) {
+                            $('#submit-btn').show();
+                            $('#loading').hide();
+                            $("#result").html(data);
+                        }
+                    });
+                    return false;
+                },
                 rules: {
                     stock: {
                         required: true

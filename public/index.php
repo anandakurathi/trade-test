@@ -8,7 +8,8 @@ $routeList = [
     'uploadCsv' => '\Src\Controllers\UploadController#index#POST',
     'stocks' => '\Src\Controllers\StocksController#index#GET',
     'stock-list' => '\Src\Controllers\StocksController#stocksByName#POST',
-    'stock-forecast' => '\Src\Controllers\StocksController#getStocksByName#POST',
+    'stock-forecast' => '\Src\Controllers\StocksController#stockForecast#POST',
+    'buy' => '\Src\Controllers\TransactionsController#buyStock#POST',
 ];
 
 $requestUri = trim($_SERVER['REQUEST_URI'], '/');

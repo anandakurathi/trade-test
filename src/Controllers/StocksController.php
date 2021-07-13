@@ -32,8 +32,34 @@ class StocksController extends BaseController
 
     public function stockForecast()
     {
+        $stock = new Stock();
+        $stockList = $stock->getStockForecast($_POST['stock'],$_POST['startDate'],$_POST['endDate']);
+        $suggestedStockToBuy = self::findLowestPrice($stockList);
+        View::render('forecast', [
+            'forecastData' => $stockList,
+            'suggestedStockToBuy' => $suggestedStockToBuy
+        ]);
+    }
 
+    public function findLowestPrice($stockList)
+    {
+        $prices = array_column($stockList, 'stock_price');
+        $index =  array_search(min($prices), $prices);
 
+        if($index === 0) {
+            // continues price drop case
+            $sorted = array_values($prices);
+            sort($sorted);
+            if ( $prices === $sorted ) {
+                return [];
+            }
+            // initial price drop case
+            unset($stockList[0]);
+            $stockList = array_values($stockList);
+            return $this->findLowestPrice($stockList);
+        } else {
+            return $stockList[$index];
+        }
     }
 
 }
