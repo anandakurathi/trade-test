@@ -9,7 +9,9 @@ $routeList = [
     'stocks' => '\Src\Controllers\StocksController#index#GET',
     'stock-list' => '\Src\Controllers\StocksController#stocksByName#POST',
     'stock-forecast' => '\Src\Controllers\StocksController#stockForecast#POST',
-    'buy' => '\Src\Controllers\TransactionsController#buyStock#POST',
+    'stock-info' => '\Src\Controllers\StocksController#viewSelectedStock#POST',
+    'buy-stock' => '\Src\Controllers\TransactionsController#buyStock#POST',
+    'my-orders' => '\Src\Controllers\TransactionsController#index#GET|POST',
 ];
 
 $requestUri = trim($_SERVER['REQUEST_URI'], '/');
@@ -23,7 +25,8 @@ if (!$route) {
 }
 
 list($className, $action, $method) = explode('#', $route);
-if (strtoupper($method) !== $requestMethod) {
+$methods = explode('|', $method);
+if(!in_array($requestMethod, $methods)) {
     halt();
 }
 

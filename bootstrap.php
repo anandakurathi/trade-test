@@ -17,7 +17,6 @@ const APP = PATH.'src'. DS;
 
 // set the time zone
 date_default_timezone_set('Asia/Kolkata');
-session_start();
 
 function matchRoute($route, $routeList)
 {

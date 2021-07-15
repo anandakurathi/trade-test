@@ -38,15 +38,12 @@ class UploadController extends BaseController
                 }
 
                 $csvReader = new ParseCsv($fileTmpName, ',');
-                $currenTime = date('Y-m-d H:i:s');
                 $csvData = [];
                 foreach ($csvReader->csvToArray() as $data) {
                     foreach ($data as $key => $entry) {
                         $csvData[$key]['stock_name'] = $entry['stock_name'];
                         $csvData[$key]['stock_price'] = $entry['price'];
                         $csvData[$key]['stock_date'] = date('Y-m-d', strtotime($entry['date']));
-                        $csvData[$key]['created_at'] = $currenTime;
-                        $csvData[$key]['updated_at'] = $currenTime;
                     }
                     $insertStock = new Stock();
                     $insertStock->insertStocks($csvData);

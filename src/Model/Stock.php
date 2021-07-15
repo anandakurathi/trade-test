@@ -6,24 +6,12 @@ namespace Src\Model;
 
 use Src\Config\DatabaseConnector;
 
-class Stock
+class Stock extends BaseModel
 {
     /**
      * @var string DB Table name
      */
     protected $table = 'stocks';
-
-    /**
-     * @var null
-     */
-    private $db = null;
-
-
-    public function __construct()
-    {
-        $dbInstance = DatabaseConnector::getInstance();
-        $this->db = $dbInstance->getConnection();
-    }
 
     /**
      * Insert stock list
@@ -36,8 +24,8 @@ class Stock
             return null;
         }
         $query = "INSERT INTO " . $this->table .
-            "(stock_name, stock_price, stock_date, created_at, updated_at)
-                VALUES (:stock_name, :stock_price, :stock_date, :created_at, :updated_at)";
+            "(stock_name, stock_price, stock_date)
+                VALUES (:stock_name, :stock_price, :stock_date)";
         $stmt = $this->db->prepare($query);
         try {
             $this->db->beginTransaction();
@@ -87,7 +75,7 @@ class Stock
         }
         $query = "
                 SELECT
-                       stock_name
+                       stock_id, stock_name
                 FROM "
             . $this->table .
             " 
@@ -112,8 +100,7 @@ class Stock
                 SELECT
                        stock_id, stock_name, stock_price, stock_date
                 FROM "
-            . $this->table .
-            " 
+            . $this->table ."
                 WHERE
                     (
                         stock_name = '$stock'
@@ -135,9 +122,27 @@ class Stock
         }
     }
 
-    public function getStockedPurchasedDetails()
+    public function getStockById($id)
     {
+        if(!$id)
+        {
+            return null;
+        }
 
+        $query = "
+                SELECT
+                       stock_id, stock_name, stock_price, stock_date
+                FROM "
+            . $this->table .
+            " WHERE stock_id = ".$id;
+        try {
+            $stmt = $this->db->prepare($query);
+            $stmt->execute();
+            return $stmt->fetch(\PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return null;
+        }
     }
 
 }

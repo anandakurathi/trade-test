@@ -11,37 +11,37 @@
     <link href="../../assets/css/easy-autocomplete.min.css" rel="stylesheet" type="text/css"/>
     <script src="../../assets/js/jquery.easy-autocomplete.min.js" type="text/javascript"></script>
     <script src="../../assets/js/jquery.validate.min.js" type="text/javascript"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-          integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
-          crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <header class="masthead">
-        <div class="inner">
-            <h3 class="masthead-brand">Stock Exchange Test</h3>
-        </div>
-    </header>
-    <main role="main">
+    <main role="main" class="mt-6">
         <div class="container">
-            <div class="text-success">
-                <?php
-                if(isset($_SESSION['msg'])){
-                    echo $_SESSION['msg'];
-                    unset($_SESSION['msg']);
-                }
+            <h1>Stock List</h1>
+            <?php
+            if (isset($_SESSION['msg'])) {
                 ?>
-            </div>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Success</strong> <?php
+                    echo $_SESSION['msg'];
+                    unset($_SESSION['msg']); ?>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <?php
+            }
+            ?>
+
             <!-- Example row of columns -->
             <form id="forecast-form" name="forecast-form" method="post">
                 <div class="row">
                     <div class="col-md-3 form-label-group">
                         <label for="stockSuggestion">Stock List</label>
                         <input
-                            type="text"
-                            class="form-control"
-                            id="stockSuggestion"
-                            name="stock"
-                            placeholder="Stock Name"
-                            value=""
-                            required
+                                type="text"
+                                class="form-control"
+                                id="stockSuggestion"
+                                name="stock"
+                                placeholder="Stock Name"
+                                value=""
+                                required
                         />
                     </div>
                     <div class="col-md-3 form-label-group">
@@ -69,8 +69,9 @@
                         />
                     </div>
                     <div class="col-md-1">
-                        <button type="submit" id="submit-btn" class="btn btn-primary submit-btn text-left">Submit</button>
-                        <div class="fa-3x" id="loading" style="display: none;">
+                        <button type="submit" id="submit-btn" class="btn btn-primary submit-btn text-left">Submit
+                        </button>
+                        <div class="fa-2x submit-btn" id="loading" style="display: none;">
                             <i class="fas fa-spinner fa-spin"></i>
                         </div>
                     </div>
@@ -81,8 +82,9 @@
         <div id="result">
         </div>
     </main>
+    <div id="transaction-modal" class="modal fade" role="dialog"></div>
 
-    <script>
+    <script type="text/javascript">
         $(document).ready(function () {
             let today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
             $('#startDate').datepicker({
@@ -109,10 +111,10 @@
             });
 
             let options = {
-                url: function(phrase) {
+                url: function (phrase) {
                     return "/stock-list";
                 },
-                getValue: function(element) {
+                getValue: function (element) {
                     return element.stock_name;
                 },
                 ajaxSettings: {
@@ -122,7 +124,7 @@
                         dataType: "json"
                     }
                 },
-                preparePostData: function(data) {
+                preparePostData: function (data) {
                     data.phrase = $("#stockSuggestion").val();
                     return data;
                 },
@@ -130,7 +132,7 @@
             };
             $("#stockSuggestion").easyAutocomplete(options);
 
-            $( "#forecast-form" ).validate( {
+            $("#forecast-form").validate({
                 submitHandler: function (form) {
                     let serializedData = $(form).serialize();
                     $.ajax({
@@ -139,16 +141,20 @@
                         data: serializedData,
                         cache: false,
                         processData: false,
-                        beforeSend: function(){
+                        beforeSend: function () {
                             $('#submit-btn').hide();
+                            $('#loading').show();
                         },
-                        complete: function(){
+                        complete: function () {
                             $("#submit-btn").show();
                         },
-                        success: function(data) {
+                        success: function (data) {
                             $('#submit-btn').show();
                             $('#loading').hide();
                             $("#result").html(data);
+                        },
+                        fail: function (jqXHR, textStatus) {
+                            alert("Request failed: " + textStatus);
                         }
                     });
                     return false;
@@ -168,29 +174,29 @@
                 },
                 messages: {
                     stock: {
-                        required: "Please choose a Stock"
+                        required: 'Please choose a Stock'
                     },
                     startDate: {
-                        required: "Please choose start Date",
+                        required: 'Please choose start Date',
                     },
                     endDate: {
-                        required: "Please choose end Date",
+                        required: 'Please choose end Date',
                     }
                 },
                 errorElement: "em",
-                errorPlacement: function ( error, element ) {
+                errorPlacement: function (error, element) {
                     // Add the `invalid-feedback` class to the error element
-                    error.addClass( "invalid-feedback" );
+                    error.addClass("invalid-feedback");
 
-                    error.insertAfter( element.closest('div') );
+                    error.insertAfter(element.closest('div'));
                 },
-                highlight: function ( element, errorClass, validClass ) {
-                    $( element ).addClass( "is-invalid" ).removeClass( "is-valid" );
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass("is-invalid").removeClass("is-valid");
                 },
                 unhighlight: function (element, errorClass, validClass) {
-                    $( element ).addClass( "is-valid" ).removeClass( "is-invalid" );
+                    $(element).addClass("is-valid").removeClass("is-invalid");
                 }
-            } );
+            });
         });
     </script>
 <?php

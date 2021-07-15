@@ -4,10 +4,13 @@
 namespace Src\Controllers;
 
 
+use Src\Config\Session;
+use Src\Model\User;
 use Src\Services\View;
 
 class BaseController
 {
+    protected $session;
 
     /**
      * Class constructor
@@ -16,6 +19,8 @@ class BaseController
      */
     public function __construct()
     {
+        $this->session = Session::getInstance();
+        $this->autoUserLogin();
     }
 
     /**
@@ -24,12 +29,13 @@ class BaseController
      * filter methods on action methods. Action methods need to be named
      * with an "Action" suffix, e.g. indexAction, showAction etc.
      *
-     * @param string $name  Method name
+     * @param string $name Method name
      * @param array $args Arguments passed to the method
      *
      * @return void
+     * @throws \Exception
      */
-    public function __call($name, $args)
+    public function __call(string $name, array $args)
     {
         $method = $name . 'Action';
 
@@ -67,6 +73,29 @@ class BaseController
      */
     public function pageNotFound()
     {
-        View::render('404.php');
+        View::render('404');
+        exit;
     }
+
+    /**
+     * Login an user by default
+     * @return bool
+     */
+    protected function autoUserLogin(): bool
+    {
+        if (!isset($this->session) || !isset($this->session->user_id)) {
+            $user = new User();
+            $userInfo = $user->getUserById(1);
+            if (!$userInfo) {
+                View::render(500);
+                exit;
+            }
+
+            $this->session->user_id = $userInfo['user_id'];
+            $this->session->name = $userInfo['user_name'];
+            $this->session->email = $userInfo['email'];
+        }
+        return true;
+    }
+
 }

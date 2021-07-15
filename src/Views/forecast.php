@@ -1,6 +1,6 @@
 <div class="container">
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-12">
             <div class="table-responsive">
                 <table class="table table-bordered table-hover">
                     <thead>
@@ -18,13 +18,16 @@
                             ?>
                             <tr>
                                 <td>
-                                    <?php echo $data['stock_name']; ?>
+                                    <?php
+                                    echo $data['stock_name']; ?>
                                 </td>
                                 <td>
-                                    <?php echo $data['stock_price']; ?>
+                                    <?php
+                                    echo $data['stock_price']; ?>
                                 </td>
                                 <td>
-                                    <?php echo $data['stock_date']; ?>
+                                    <?php
+                                    echo $data['stock_date']; ?>
                                 </td>
                                 <td>
                                     <?php
@@ -42,8 +45,13 @@
                                     }
 
                                     ?>
-                                    <a href="/buy" class="btn <?php echo $btnStyle; ?>">
-                                        <i class="fa fa-shopping-cart"></i> <?php echo $suggestion; ?>
+                                    <a href="javascript:void(0);"
+                                       data-stock-id="<?php
+                                       echo $data['stock_id']; ?>"
+                                       class="buyStock btn <?php
+                                       echo $btnStyle; ?>">
+                                        <i class="fa fa-shopping-cart"></i> <?php
+                                        echo $suggestion; ?>
                                     </a>
                                 </td>
                             </tr>
@@ -57,14 +65,43 @@
                 </table>
             </div>
         </div>
-        <div class="col-md-4 vertical-separation">
-            <h4>Your Stock Comparison</h4>
-            <hr/>
-        </div>
     </div>
 
 </div>
 <script>
     var exampleEl = document.getElementById('tooltip')
-    var tooltip = new bootstrap.Tooltip(exampleEl)
+    var tooltip = new bootstrap.Tooltip(exampleEl);
+
+    $(document).ready(function () {
+        $('.buyStock').click(function (e) {
+            e.preventDefault();
+            let stockId = $(this).data('stock-id');
+            let startDate = $('#startDate').val();
+            let endDate = $('#endDate').val();
+            $.ajax({
+                url: '/stock-info',
+                method: 'POST',
+                data: 'stockId=' + stockId + '&startDate=' + startDate + '&endDate=' + endDate,
+                cache: false,
+                processData: false,
+                beforeSend: function () {
+                    $("#overlay").fadeIn(300);
+                },
+                complete: function () {
+                    $("#overlay").fadeOut(300);
+                },
+                success: function (data) {
+                    $("#overlay").fadeOut(300);
+                    $("#transaction-modal").html(data);
+                    $('#transaction-modal').modal('show');
+                },
+                fail: function (jqXHR, textStatus) {
+                    $("#overlay").fadeOut(300);
+                    alert("Request failed: " + textStatus);
+                }
+            });
+        })
+    });
+
+
 </script>

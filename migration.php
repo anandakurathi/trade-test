@@ -14,6 +14,10 @@ $statement = <<<EOS
       UNIQUE INDEX `user_id_UNIQUE` (`user_id` ASC))
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4;
+    
+    INSERT INTO `users` (`user_id`, `user_name`, `email`)
+    VALUES
+	    (1,'joe','joe@gmail.com');
 
     DROP TABLE IF EXISTS `stocks`;
 
@@ -22,40 +26,30 @@ $statement = <<<EOS
       `stock_name` VARCHAR(15) NOT NULL,
       `stock_price` FLOAT(7,2) NOT NULL DEFAULT 0.00,
       `stock_date` DATE NOT NULL,
-      `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
       PRIMARY KEY (`stock_id`))
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4;
 
     DROP TABLE IF EXISTS `transactions`;
 
-    CREATE TABLE IF NOT EXISTS `transactions` (
-      `transaction_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-      `transaction_ref` VARCHAR(16) NOT NULL,
-      `user_id` INT(11) UNSIGNED NOT NULL,
-      `stock_id` BIGINT(20) UNSIGNED NOT NULL,
-      `transaction_type` ENUM('Buy', 'Sell') NOT NULL DEFAULT 'Buy',
-      `transaction_date` DATETIME NOT NULL,
-      `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CREATE TABLE `transactions` (
+      `transaction_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+      `transaction_ref` varchar(16) NOT NULL,
+      `user_id` int(11) unsigned NOT NULL,
+      `stock_name` varchar(15) NOT NULL DEFAULT '',
+      `stock_price` float(6,2) NOT NULL DEFAULT 0.00,
+      `stock_date` date NOT NULL,
+      `quantity` float(6,2) unsigned NOT NULL DEFAULT 0.00,
+      `total_price` double(10,2) NOT NULL DEFAULT 0.00,
+      `transaction_type` enum('Buy','Sell') NOT NULL DEFAULT 'Buy',
+      `transaction_date` datetime NOT NULL,
       PRIMARY KEY (`transaction_id`),
-      UNIQUE INDEX `transaction_id_UNIQUE` (`transaction_id` ASC),
-      UNIQUE INDEX `transaction_ref_UNIQUE` (`transaction_ref` ASC),
-      INDEX `who_made_transaction_idx` (`user_id` ASC),
-      INDEX `stok_ref_id_idx` (`stock_id` ASC),
-      CONSTRAINT `who_made_transaction`
-        FOREIGN KEY (`user_id`)
-        REFERENCES `users` (`user_id`)
-        ON DELETE NO ACTION
-        ON UPDATE NO ACTION,
-      CONSTRAINT `stok_ref_id`
-        FOREIGN KEY (`stock_id`)
-        REFERENCES `stocks` (`stock_id`)
-        ON DELETE NO ACTION
-        ON UPDATE NO ACTION)
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8mb4;
+      UNIQUE KEY `transaction_id_UNIQUE` (`transaction_id`),
+      UNIQUE KEY `transaction_ref_UNIQUE` (`transaction_ref`),
+      KEY `who_made_transaction_idx` (`user_id`),
+      KEY `stok_ref_id_idx` (`stock_name`),
+      CONSTRAINT `who_made_transaction` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 EOS;
 

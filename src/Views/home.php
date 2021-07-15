@@ -1,13 +1,7 @@
 <?php
 \Src\Services\View::includeLayoutElement('header')
 ?>
-    <header class="masthead mb-auto">
-        <div class="inner">
-            <h3 class="masthead-brand">Stock Exchange Test</h3>
-        </div>
-    </header>
-
-    <main role="main" class="inner cover">
+    <main role="main" class="inner cover text-center cover-mt">
         <h1 class="cover-heading">Load Stock Data</h1>
         <p class="lead">Use the CSV for loading the stocks</p>
         <div class="lead">
@@ -32,7 +26,7 @@
                 </div>
                 <br/>
                 <br/>
-                <button class="btn btn-lg btn-secondary" name="submit">Upload</button>
+                <button class="btn btn-lg btn-primary" name="submit">Upload</button>
             </form>
         </div>
     </main>
