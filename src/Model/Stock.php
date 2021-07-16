@@ -101,13 +101,12 @@ class Stock extends BaseModel
             . $this->table . "
                 WHERE
                     (
-                        stock_name = '$stock'
-                        AND DATE(stock_date) BETWEEN '$from' AND '$to'
+                        stock_name = '$stock' OR stock_name LIKE '%$stock%'
                     )
-                OR
+                AND
                     (
-                        stock_name LIKE '%$stock%'
-                        AND DATE(stock_date) <= '$from' or DATE(stock_date) >= '$to'
+                        DATE(stock_date) BETWEEN '$from' AND '$to'
+                        OR DATE(stock_date) <= '$from' or DATE(stock_date) >= '$to'
                     )
                 ORDER BY stock_date DESC";
         try {
