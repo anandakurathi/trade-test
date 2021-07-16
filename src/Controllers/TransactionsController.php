@@ -26,10 +26,13 @@ class TransactionsController extends BaseController
     /**
      * @throws \Exception
      */
-    public function buyStock()
+    public function transaction()
     {
         $stockId = $_POST['stock_id'];
         $quantity = $_POST['quantity'];
+        $transType = ($_POST['transType'] && $_POST['transType'] === 'Buy') ?
+            Transaction::TRANSACTION_TYPE['Buy'] :
+            Transaction::TRANSACTION_TYPE['Sell'];
 
         $stock = new Stock();
         $stockInfo = $stock->getStockById($stockId);
@@ -41,7 +44,7 @@ class TransactionsController extends BaseController
             $quantity,
             $this->session->user_id,
             $totalAmount,
-            Transaction::TRANSACTION_TYPE['Buy']
+            $transType
         );
         if ($transactionId) {
             $response = [
@@ -53,6 +56,4 @@ class TransactionsController extends BaseController
         }
         View::render('transaction-status', ['response' => $response]);
     }
-
-
 }

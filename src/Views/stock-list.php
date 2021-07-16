@@ -82,7 +82,7 @@
         <div id="result">
         </div>
     </main>
-    <div id="transaction-modal" class="modal fade" role="dialog"></div>
+    <div id="transaction-modal" class="modal fade bd-example-modal-lg" role="dialog"></div>
 
     <script type="text/javascript">
         $(document).ready(function () {

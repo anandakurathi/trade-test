@@ -87,6 +87,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12 ms-auto">
+                            <input type="hidden" name="transType" value="Buy"/>
                             <input type="hidden" name="stock_id" value="<?php
                             echo ($stockInfo && array_key_exists(
                                     'stock_id',
@@ -127,7 +128,7 @@
             submitHandler: function (form) {
                 let serializedData = $(form).serialize();
                 $.ajax({
-                    url: '/buy-stock',
+                    url: '/make-transaction',
                     type: 'POST',
                     data: serializedData,
                     cache: false,
@@ -146,7 +147,7 @@
                         setTimeout(function(){
                             $('#transaction-modal').modal('hide');
                             window.location.replace('/my-orders');
-                        }, 5000);
+                        }, 3000);
                     },
                     fail: function( jqXHR, textStatus ) {
                         alert( "Request failed: " + textStatus );

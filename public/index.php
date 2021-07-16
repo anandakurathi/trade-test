@@ -9,8 +9,9 @@ $routeList = [
     'stocks' => '\Src\Controllers\StocksController#index#GET',
     'stock-list' => '\Src\Controllers\StocksController#stocksByName#POST',
     'stock-forecast' => '\Src\Controllers\StocksController#stockForecast#POST',
-    'stock-info' => '\Src\Controllers\StocksController#viewSelectedStock#POST',
-    'buy-stock' => '\Src\Controllers\TransactionsController#buyStock#POST',
+    'stock-buy-info' => '\Src\Controllers\StocksController#viewSelectedBuyStock#POST',
+    'stock-sell-info' => '\Src\Controllers\StocksController#viewSelectedSellStock#POST',
+    'make-transaction' => '\Src\Controllers\TransactionsController#transaction#POST',
     'my-orders' => '\Src\Controllers\TransactionsController#index#GET|POST',
 ];
 

@@ -56,7 +56,6 @@
                             <th>Order Quantity</th>
                             <th>Total price</th>
                             <th>Transaction type</th>
-                            <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -72,17 +71,6 @@
                                     <td><?php echo $item['quantity']; ?></td>
                                     <td><?php echo $item['total_price']; ?></td>
                                     <td><?php echo $item['transaction_type']; ?></td>
-                                    <td>
-                                        <?php
-                                            if($item['transaction_type'] === 'Buy') {
-                                                ?>
-                                                <a href="javascript:void(0);" class="btn btn-primary">
-                                                    <i class="fa fa-usd"></i>
-                                                </a>
-                                                <?php
-                                            }
-                                        ?>
-                                    </td>
                                 </tr>
                                 <?php
                             }

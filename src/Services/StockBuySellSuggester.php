@@ -4,7 +4,7 @@
 namespace Src\Services;
 
 
-class StockBuySuggester
+class StockBuySellSuggester
 {
     public function bestPriceToBuy($stockList)
     {
@@ -25,5 +25,15 @@ class StockBuySuggester
         } else {
             return $stockList[$index];
         }
+    }
+
+    public function bestPriceToSell($stockList, $purchasePrice)
+    {
+        if(!$stockList) {
+            return;
+        }
+        $prices = array_column($stockList, 'stock_price');
+        $index =  array_search(max($prices), $prices);
+        return $stockList[$index];
     }
 }

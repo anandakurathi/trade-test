@@ -94,4 +94,72 @@ class Transaction extends BaseModel
             return null;
         }
     }
+
+    public function getLastTransaction($stock, $userId)
+    {
+        $query = "
+                SELECT
+                    transaction_id, transaction_ref, 
+                    stock_name, stock_price, stock_date,
+                    quantity, total_price,
+                    transaction_type, transaction_date
+                FROM "
+            . $this->table . " 
+                WHERE
+                user_id = '$userId'
+                AND
+                    (
+                        stock_name = '$stock' 
+                        OR 
+                        stock_name LIKE '%$stock%'
+                    )
+                ORDER BY stock_date DESC LIMIT 1";
+        try {
+            $stmt = $this->db->prepare($query);
+            $stmt->execute();
+            return $stmt->fetch(\PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return null;
+        }
+    }
+
+    public function totalAssetsUserHas($stock, $userId)
+    {
+        $bought = $this->getTotalStockUserByTransactionType($stock, $userId, self::TRANSACTION_TYPE['Buy']);
+        $sold = $this->getTotalStockUserByTransactionType($stock, $userId, self::TRANSACTION_TYPE['Sell']);
+
+        return [
+            'totalQuantity' => (float)$bought['total_quantity'] - (float)$sold['total_quantity'],
+            'totalPrice' => (float)$bought['total_stock_price'] - (float)$sold['total_stock_price'],
+            'saleAvgValue' => $sold['avg_purchase_value'],
+            'boughtAvgValue' => $bought['avg_purchase_value'],
+        ];
+    }
+
+    public function getTotalStockUserByTransactionType($stock, $userId, $transType)
+    {
+        $query = "
+                SELECT
+                    SUM(quantity) AS total_quantity, 
+                    SUM(total_price) AS total_stock_price, 
+                    AVG(stock_price) AS avg_purchase_value
+                FROM "
+            . $this->table . " 
+                WHERE
+                user_id = '$userId'
+                AND
+                stock_name = '$stock' 
+                AND 
+                transaction_type = '$transType'";
+        try {
+            $stmt = $this->db->prepare($query);
+            $stmt->execute();
+            return $stmt->fetch(\PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return null;
+        }
+    }
+
 }

@@ -4,8 +4,6 @@
 namespace Src\Model;
 
 
-use Src\Config\DatabaseConnector;
-
 class Stock extends BaseModel
 {
     /**
@@ -100,7 +98,7 @@ class Stock extends BaseModel
                 SELECT
                        stock_id, stock_name, stock_price, stock_date
                 FROM "
-            . $this->table ."
+            . $this->table . "
                 WHERE
                     (
                         stock_name = '$stock'
@@ -109,7 +107,7 @@ class Stock extends BaseModel
                 OR
                     (
                         stock_name LIKE '%$stock%'
-                        AND DATE(stock_date) <= '$from'
+                        AND DATE(stock_date) <= '$from' or DATE(stock_date) >= '$to'
                     )
                 ORDER BY stock_date DESC";
         try {
@@ -124,8 +122,7 @@ class Stock extends BaseModel
 
     public function getStockById($id)
     {
-        if(!$id)
-        {
+        if (!$id) {
             return null;
         }
 
@@ -134,11 +131,35 @@ class Stock extends BaseModel
                        stock_id, stock_name, stock_price, stock_date
                 FROM "
             . $this->table .
-            " WHERE stock_id = ".$id;
+            " WHERE stock_id = " . $id;
         try {
             $stmt = $this->db->prepare($query);
             $stmt->execute();
             return $stmt->fetch(\PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return null;
+        }
+    }
+
+    public function getForecastForPurchasedStocks(string $stock, $userId)
+    {
+        $query = "
+            SELECT *
+            FROM stocks 
+            WHERE ( stock_name = '$stock' OR stock_name LIKE '%$stock%' ) 
+            AND `stock_date` > (
+                SELECT stock_date
+                FROM transactions 
+                WHERE user_id = '$userId' 
+                AND ( stock_name = '$stock' OR stock_name LIKE '%$stock%' ) 
+                ORDER BY stock_date 
+                DESC LIMIT 1
+            )";
+        try {
+            $stmt = $this->db->prepare($query);
+            $stmt->execute();
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             error_log($e->getMessage());
             return null;
