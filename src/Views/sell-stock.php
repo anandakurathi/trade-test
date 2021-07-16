@@ -251,7 +251,7 @@
                         setTimeout(function () {
                             $('#transaction-modal').modal('hide');
                             window.location.replace('/my-orders');
-                        }, 30000);
+                        }, 3000);
                     },
                     fail: function (jqXHR, textStatus) {
                         alert("Request failed: " + textStatus);

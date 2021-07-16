@@ -66,7 +66,12 @@
                                         <i class="fa fa-shopping-cart"></i> <?php
                                         echo $suggestion; ?>
                                     </a>
-                                    <?php if($lastPurchase) {?>
+                                    <?php
+                                    if($lastPurchase) {
+                                        $date1 = new DateTime($lastPurchase['stock_date']);
+                                        $date2 = new DateTime($data['stock_date']);
+                                        if($date1 <= $date2) {
+                                        ?>
                                         <a href="javascript:void(0);"
                                            data-stock-id="<?php
                                            echo $data['stock_id']; ?>"
@@ -75,7 +80,7 @@
                                             <i class="fa fa-usd"></i> <?php
                                             echo $sellSuggestion; ?>
                                         </a>
-                                    <?php } ?>
+                                    <?php }} ?>
                                 </td>
                             </tr>
                             <?php
