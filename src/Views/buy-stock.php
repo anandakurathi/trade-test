@@ -147,7 +147,7 @@
                         setTimeout(function(){
                             $('#transaction-modal').modal('hide');
                             window.location.replace('/my-orders');
-                        }, 3000);
+                        }, 30000);
                     },
                     fail: function( jqXHR, textStatus ) {
                         alert( "Request failed: " + textStatus );

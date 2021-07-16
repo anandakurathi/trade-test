@@ -39,20 +39,25 @@ class TransactionsController extends BaseController
         $totalAmount = $quantity * $stockInfo['stock_price'];
 
         $transaction = new Transaction();
-        $transactionId = $transaction->createTransaction(
-            $stockInfo,
-            $quantity,
-            $this->session->user_id,
-            $totalAmount,
-            $transType
-        );
-        if ($transactionId) {
-            $response = [
-                'error' => false,
-                'msg' => 'Transaction successful.<br/> Your reference Number is : <b>' . $transactionId . '</b>'
-            ];
+        $todayTransCount = $transaction->getLatestTransaction($stockInfo['stock_name'], $this->session->user_id);
+        if ($todayTransCount <= 0) {
+            $transactionId = $transaction->createTransaction(
+                $stockInfo,
+                $quantity,
+                $this->session->user_id,
+                $totalAmount,
+                $transType
+            );
+            if ($transactionId) {
+                $response = [
+                    'error' => false,
+                    'msg' => 'Transaction successful.<br/> Your reference Number is : <b>' . $transactionId . '</b>'
+                ];
+            } else {
+                $response = ['error' => true, 'msg' => 'Transaction was not successful.'];
+            }
         } else {
-            $response = ['error' => true, 'msg' => 'Transaction was not successful.'];
+            $response = ['error' => true, 'msg' => 'Per day one transaction only allowed.'];
         }
         View::render('transaction-status', ['response' => $response]);
     }

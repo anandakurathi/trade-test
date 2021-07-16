@@ -12,7 +12,7 @@
                 $state = ($response && array_key_exists('error', $response)) ? $response['error'] : false;
                 ?>
                 <p class="text-<?php
-                echo (!$state) ? 'success' : 'warning'; ?>">
+                echo (!$state) ? 'success' : 'danger'; ?>">
                     <?php
                     echo ($response && array_key_exists(
                             'msg',

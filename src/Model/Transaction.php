@@ -162,4 +162,25 @@ class Transaction extends BaseModel
         }
     }
 
+    public function getLatestTransaction($stock, $userId)
+    {
+        $query = "
+                SELECT
+                    COUNT(*)
+                FROM "
+            . $this->table . " 
+                WHERE
+                user_id = '$userId'
+                AND
+                DATE(transaction_date) = CURRENT_DATE()";
+        try {
+            $stmt = $this->db->prepare($query);
+            $stmt->execute();
+            return $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return null;
+        }
+    }
+
 }
